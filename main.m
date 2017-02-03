@@ -8,13 +8,11 @@ time = cputime;
 RANGE = [1 1e5];
 %get baseline readings
 [MEAN0 STD0 SIG0 COUNT0 BINS0] = setup(1, 0, RANGE);
-figure(1);
-hold on;
-hist(SIG0, 40, 'facecolor', 'b');
+
 %get values to test against base line
 [MEAN STD SIG COUNT BINS] = setup(ALPHA, percent_snr, RANGE, PLOT);
-hist(SIG, 40, 'facecolor', 'r');
-hold off;
+
+
 
 if (ALPHA >= .8 && ALPHA <= 1.2)
   disp('#####################################################################');
@@ -23,7 +21,12 @@ if (ALPHA >= .8 && ALPHA <= 1.2)
   disp('H_0, Null hypothesis - Significance is not a std normal distribution');
   disp('H_a, Alternate hypothesis - Significance is a std normal distribution');
   disp('%%%%%%%%%%%%%%%%%%%%%%%%% Test Data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-  [PVAL H] = isnorm(SIG);
+  figure(1);
+  hold on;
+  hist(SIG0, 40, 'facecolor', 'b');
+  hist(real(SIG), 40, 'facecolor', 'r');
+  hold off;
+  legend('dicks', 'vags');
   if (H == 1)
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
     printf('\t\t\tSIGNAL PRESENT\n');
@@ -38,6 +41,14 @@ else
   disp('H_0, Null hypothesis - Significance is not a std normal distribution');
   disp('H_a, Alternate hypothesis - Significance is a std normal distribution');
   disp('#####################################################################');
+  x = SIG0.^2;
+  x = sqrt(x)/2;
+  figure(1);
+  hold on;
+  hist(x, 40, 'facecolor', 'b');
+  hist(real(SIG), 40, 'facecolor', 'r');
+  hold off;
+  legend('dicks', 'vags');
   if (STD -STD0 > 0.1)
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
     printf('\t\t\tSIGNAL PRESENT\n');

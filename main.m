@@ -14,7 +14,7 @@ RANGE = [1 1e5];
 
 
 
-if (ALPHA >= .8 && ALPHA <= 1.2)
+if (ALPHA >= .5 && ALPHA <= 1.5)
   disp('#####################################################################');
   disp('%%%%%%%%%%%%%%%%%Using eq. 5 from Li and Ma 1983%%%%%%%%%%%%%%%%%%%%%');
   disp('#####################################################################');
@@ -24,10 +24,13 @@ if (ALPHA >= .8 && ALPHA <= 1.2)
   figure(1);
   hold on;
   hist(SIG0, 40, 'facecolor', 'b');
-  hist(real(SIG), 40, 'facecolor', 'r');
+  hist(real(SIG), 40, 'facecolor', 'w');
   hold off;
-  legend('dicks', 'vags');
-  if (H == 1)
+  title('Equation 5 - Test for significant SNR');
+  xlabel('Value of Signal Occurence');
+  ylabel('Number of Times Value Occured');
+  legend('Standard Normal Dist', 'Test Data');
+  if (MEAN - MEAN0 > 0.05)
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
     printf('\t\t\tSIGNAL PRESENT\n');
   else
@@ -41,15 +44,24 @@ else
   disp('H_0, Null hypothesis - Significance is not a std normal distribution');
   disp('H_a, Alternate hypothesis - Significance is a std normal distribution');
   disp('#####################################################################');
+  
+  %converting standard normal dist to chi-square dist
   x = SIG0.^2;
+  %converting chi-square dist to chi dist and dividing by 2 due to double counts
+  %of negative values that have become possitive due to squaring.
+  %in essence getting rid of all the negative values of the normal dist
   x = sqrt(x)/2;
   figure(1);
   hold on;
   hist(x, 40, 'facecolor', 'b');
-  hist(real(SIG), 40, 'facecolor', 'r');
+  hist(real(SIG), 40, 'facecolor', 'w');
   hold off;
-  legend('dicks', 'vags');
-  if (STD -STD0 > 0.1)
+  title('Equation 17 - Test for significant SNR');
+  xlabel('Value of Signal Occurence');
+  ylabel('Number of Times Value Occured');
+  legend('Chi Dist -> df = 1', 'Test Data');
+  same_dist = chisquare_test_homogeneity(real(SIG), x, 1)
+  if (MEAN!=MEAN0)
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
     printf('\t\t\tSIGNAL PRESENT\n');
   else
@@ -57,7 +69,8 @@ else
     printf('\t\t\t\tNO SIGNAL\n');
   end
 end
-
+%just worked out the chi distribution to normal distribution correlation
+%read over papers and get code to tell me if signal exists
 %printf('Total cpu time: %f seconds\n', cputime-time);
 clear all;
 endfunction

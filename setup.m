@@ -55,7 +55,7 @@ end
 
 %Retrun different variables depending on value of alpha. These are used to
 %determine if a signal is present or not
-if (ALPHA >= .01 && ALPHA <= 20)
+if (ALPHA >= .5 && ALPHA <= 1.5)
   retmean = mean(signif);
   retstd = std(signif);
   retsig = signif;

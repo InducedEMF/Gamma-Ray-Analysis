@@ -26,7 +26,7 @@ end
 term1 = (1 + ALPHA)/ALPHA;
 term2 = 1 + ALPHA;
 
-if (ALPHA >= .01 && ALPHA <= 20)  
+if (ALPHA >= .5 && ALPHA <= 1.5)  
   x = (ON - (ALPHA*OFF))./sqrt(ON + ((ALPHA^2)*(OFF)));
   retval = x;
 else

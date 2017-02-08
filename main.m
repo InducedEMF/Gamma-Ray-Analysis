@@ -5,12 +5,12 @@ time = cputime;
 %initiate the program with outputs of MEAN, VARIANCE and the distribution of 
 %significance data or the max point of the histogram. Depending on wether
 %equation 5 or equation 17 is used
-RANGE = [1 1e5];
+RANGE = [1 1e7];
 %get baseline readings
 [MEAN0 STD0 SIG0 COUNT0 BINS0] = setup(1, 0, RANGE);
 
 %get values to test against base line
-[MEAN STD SIG COUNT BINS] = setup(ALPHA, percent_snr, RANGE, PLOT);
+[MEAN STD SIG COUNT BINS] = setup(ALPHA, percent_snr, RANGE);
 
 
 
@@ -22,8 +22,8 @@ if (ALPHA >= .5 && ALPHA <= 1.5)
   disp('H_a, Alternate hypothesis - Significance is a std normal distribution');
   disp('%%%%%%%%%%%%%%%%%%%%%%%%% Test Data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
   figure(1);
-  hold on;
   hist(SIG0, 40, 'facecolor', 'b');
+  hold on;
   hist(real(SIG), 40, 'facecolor', 'w');
   hold off;
   title('Equation 5 - Test for significant SNR');
@@ -35,7 +35,7 @@ if (ALPHA >= .5 && ALPHA <= 1.5)
     printf('\t\t\tSIGNAL PRESENT\n');
   else
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-    printf('\t\t\t\tNO SIGNAL\n');
+    printf('\t\t\tNO SIGNAL\n');
   end
 else
   disp('#####################################################################');
@@ -52,21 +52,23 @@ else
   %in essence getting rid of all the negative values of the normal dist
   x = sqrt(x)/2;
   figure(1);
-  hold on;
   hist(x, 40, 'facecolor', 'b');
+  hold on;
   hist(real(SIG), 40, 'facecolor', 'w');
   hold off;
   title('Equation 17 - Test for significant SNR');
   xlabel('Value of Signal Occurence');
   ylabel('Number of Times Value Occured');
   legend('Chi Dist -> df = 1', 'Test Data');
-  same_dist = chisquare_test_homogeneity(real(SIG), x, 1)
-  if (MEAN!=MEAN0)
+  MEAN = round(MEAN*10)/10
+  MEAN0 = mean(x);
+  MEAN0 = round(MEAN0*10)/10
+  if (MEAN - MEAN0 >= 0.2)
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
     printf('\t\t\tSIGNAL PRESENT\n');
   else
     disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-    printf('\t\t\t\tNO SIGNAL\n');
+    printf('\t\t\tNO SIGNAL\n');
   end
 end
 %just worked out the chi distribution to normal distribution correlation
